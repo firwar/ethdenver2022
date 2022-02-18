@@ -1,0 +1,14 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "mocha": true
+  },
+  "extends": [
+    "next",
+    "plugin:prettier/recommended",
+    "eslint-config-prettier",
+    "prettier"
+  ]
+}

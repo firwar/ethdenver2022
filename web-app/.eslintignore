@@ -1,0 +1,11 @@
+# ignore installed packages
+**/node_modules/
+node_modules/
+**/node_modules/
+**/public/
+
+# ignore backlog for now
+backlog/
+
+# documentation files
+jsdoc/
