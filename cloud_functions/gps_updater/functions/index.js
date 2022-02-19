@@ -1,6 +1,7 @@
 const functions = require("firebase-functions");
 const { Requester, Validator } = require("@chainlink/external-adapter");
 const { getFirestore, Timestamp, FieldValue, GeoPoint } = require('firebase-admin/firestore');
+const haversine = require('haversine-distance');
 
 // The Firebase Admin SDK to access Firestore.
 const admin = require('firebase-admin');
@@ -17,18 +18,21 @@ const dbRef = db.collection('userLocation');
 // with a Boolean value indicating whether or not they
 // should be required.
 const customParams = {
-  requestingUser: "user",
-  targetUser: "user"
+  sellerAddress: "user",
+  buyerAddress: "user"
 };
 
-const DEFAULT_CLOSENESS = 0.001;
+const DEFAULT_CLOSENESS_METERS = 50;
 
 // Handles the App Update
 const handleUpdateRequest = async ({ latitude, longitude, userAddress }) => {
 
+  functions.logger.info(`${userAddress} is at ${latitude} ${longitude}`);
+
   // Create datapoint
   const userData = {
-    location: new GeoPoint(latitude, longitude),
+    latitude,
+    longitude,
     userAddress
   }
 
@@ -48,10 +52,13 @@ const handleUpdateRequest = async ({ latitude, longitude, userAddress }) => {
 };
 
 // Helper function to compare the distance between to locations
-const distanceBetweenUsers = (requestUserData, targetUserData) => {
-  const distance = requestUserData.location.compareTo(targetUserData.location);
-  functions.logger.info(`Distance between ${requestUserData.userAddress} and ${targetUserData.userAddress} is ${distance}`);
-  return distance <= DEFAULT_CLOSENESS;
+const distanceBetweenUsers = (buyerUserData, sellerUserData) => {
+  // Returns distance in meters;
+  const buyerLocation = { latitude: buyerUserData.latitude, longitude: buyerUserData.longitude };
+  const sellerLocation = { latitude: sellerUserData.latitude, longitude: sellerUserData.longitude };
+  const distance = haversine(buyerLocation, sellerLocation);
+  functions.logger.info(`Distance between ${buyerUserData.userAddress} and ${sellerUserData.userAddress} is ${distance}`);
+  return distance <= DEFAULT_CLOSENESS_METERS;
 };
 
 // Handles the EA Request
@@ -61,7 +68,9 @@ const handleGetRequest = async (request) => {
 
   // Get JobRunId supplied from Node to EA
   const jobRunID = validator.validated.id;
-  const { requestingUser, targetUser } = validator.validated.data;
+  const { sellerAddress, buyerAddress } = validator.validated.data;
+
+  functions.logger.info(`Address ${sellerAddress} ${buyerAddress}`)
 
   // Default Response
   // TODO we'll set some default precision for the GPS
@@ -74,10 +83,14 @@ const handleGetRequest = async (request) => {
 
   try {
     // Query the data
-    const [requestUserData, targetUserData] = await Promise.all([dbRef.get(requestingUser), dbRef.get(targetUser)]);
+    const sellerDoc = dbRef.doc(sellerAddress);
+    const buyerDoc = dbRef.doc(buyerAddress);
+    const [buyerUserData, sellerUserData] = await Promise.all([sellerDoc.get(), buyerDoc.get()]);
+
+    functions.logger.info(`Buyer ${JSON.stringify(buyerUserData.data())} Seller ${JSON.stringify(sellerUserData.data())}`)
 
     // Calculate the delta and just return true false because I don't want to do Geo math in Solidity
-    const close = distanceBetweenUsers(requestUserData, targetUserData);
+    const close = distanceBetweenUsers(buyerUserData.data(), sellerUserData.data());
 
     defaultResponse.data = close;
     return defaultResponse;
@@ -92,14 +105,14 @@ const handleGetRequest = async (request) => {
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
 exports.updateLocation = functions.https.onRequest( (request, response) => {
-  functions.logger.info(`Hello user ${request.body.sellerAddress}`, {structuredData: true});
+  functions.logger.info(`Hello user ${request.body.userAddress}`, {structuredData: true});
   handleUpdateRequest(request.body).then( (resData) => {
     response.status(200).send(resData);
   });
 });
 
 exports.getLocation = functions.https.onRequest( (request, response) => {
-  functions.logger.info(`Hello user ${request.body.sellerAddress}`, {structuredData: true});
+  functions.logger.info(`Hello user ${request.body.buyerAddress} ${request.body.sellerAddress}`, {structuredData: true});
   handleGetRequest(request.body).then( (resData) => {
     response.status(200).send(resData);
   });

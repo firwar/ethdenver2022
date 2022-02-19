@@ -4,6 +4,8 @@ require('dotenv').config();
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
+// MUMBAI ORACLE ADDRESS 0xC74AeE339Dd85388e232B3A2C4BC233af8D16c79
+// MAINNET(MATIC) ORACLE ADDRESS
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
