@@ -6,6 +6,27 @@ import PinataFile from "../pinata/pinataFile";
 import ExchangeItGatewayContext from "../hooks/useExchangeItGateway";
 import SignerContext from "../hooks/useSigner";
 import ToastContext from "../hooks/useToast";
+import { deepFreeze } from "grommet/utils";
+
+export const customTheme = deepFreeze({
+  global: {
+    colors: {
+      brand: "#475C7A",
+      focus: "#685D79",
+      selected: "#475C7A",
+      "accent-1": "#685D79",
+      "accent-2": "#AB6C82",
+      "accent-3": "#D8737F",
+      "accent-4": "#FCBB6D",
+      "dark-1": "#344E5C",
+    },
+  },
+  button: {
+    padding: {
+      horizontal: "12px",
+    },
+  },
+});
 
 const ListingForm = () => {
   const router = useRouter();
@@ -72,7 +93,7 @@ const ListingForm = () => {
   };
 
   return (
-    <Grommet>
+    <Box>
       <Box fill overflow="auto" align="center" justify="center" pad="large">
         <Box flex={false} width="medium" gap="small">
           <PinataFile setIpfsHash={setIpfsHash} />
@@ -174,7 +195,7 @@ const ListingForm = () => {
           </Form>
         </Box>
       </Box>
-    </Grommet>
+    </Box>
   );
 };
 

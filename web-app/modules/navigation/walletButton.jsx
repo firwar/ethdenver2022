@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Button } from 'grommet';
-import { ProviderContext } from '../hooks';
-import useWeb3Modal from '../hooks/useWeb3Modal';
+import React, { useContext, useEffect, useState } from "react";
+import { Button } from "grommet";
+import { ProviderContext } from "../hooks";
+import useWeb3Modal from "../hooks/useWeb3Modal";
 
 const WalletButton = () => {
   const { provider } = useContext(ProviderContext);
@@ -9,7 +9,7 @@ const WalletButton = () => {
   const [loadWeb3Modal, logoutOfWeb3Modal, signedInAddress] = useWeb3Modal();
 
   useEffect(() => {
-    console.log('provider changed');
+    console.log("provider changed");
     console.log(provider);
     if (provider !== null) {
       console.log(provider.provider.selectedAddress);
@@ -18,7 +18,9 @@ const WalletButton = () => {
 
   return (
     <Button
-      label={!provider ? 'Connect Wallet' : `${signedInAddress} Disconnect Wallet`}
+      label={
+        !provider ? "Connect Wallet" : `${signedInAddress} Disconnect Wallet`
+      }
       onClick={() => {
         if (!provider) {
           loadWeb3Modal();

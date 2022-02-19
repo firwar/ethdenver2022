@@ -59,7 +59,7 @@ const Listings = () => {
   }, [exchangeItGateway, provider, signer]);
 
   return (
-    <Grommet theme={grommet}>
+    <Box>
       <Box justify="center" pad="none" margin={{ top: "small" }}>
         <Heading level="4" alignSelf="center" textAlign="center">
           Buy and sell locally with crypto <u>escrow</u> incentivized exchange!
@@ -79,7 +79,7 @@ const Listings = () => {
         </Grid>
         {listings.length === 0 && <CreateListingHint />}
       </Box>
-    </Grommet>
+    </Box>
   );
 };
 

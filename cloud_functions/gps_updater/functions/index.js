@@ -105,10 +105,20 @@ const handleGetRequest = async (request) => {
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
 exports.updateLocation = functions.https.onRequest( (request, response) => {
-  functions.logger.info(`Hello user ${request.body.userAddress}`, {structuredData: true});
-  handleUpdateRequest(request.body).then( (resData) => {
-    response.status(200).send(resData);
-  });
+  response.set('Access-Control-Allow-Origin', '*');
+  response.set('Access-Control-Allow-Headers', '*');
+  response.set('Access-Control-Allow-Methods', '*');
+  response.set('Access-Control-Max-Age', '3600');
+  if (request.method === 'OPTIONS') {
+    console.log('Got Preflight')
+    // Send response to OPTIONS requests
+    response.status(204).send('');
+  } else {
+    functions.logger.info(`Hello user ${request.body.userAddress} with ${request.body}`, {structuredData: true});
+    handleUpdateRequest(request.body).then( (resData) => {
+      response.status(200).send(resData);
+    });
+  }
 });
 
 exports.getLocation = functions.https.onRequest( (request, response) => {
