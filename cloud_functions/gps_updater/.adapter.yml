@@ -1,0 +1,11 @@
+name: Am I Close Enough
+description: External Adapter for Checking If Two Users Are Close
+node_identifier: eth-denver
+platforms:
+  - GCP Functions
+data_sources:
+  - name: Geolocation
+    url: https://developer.mozilla.org/en-US/docs/Web/API/Navigator/geolocation
+parameters:
+  - user
+  - user
