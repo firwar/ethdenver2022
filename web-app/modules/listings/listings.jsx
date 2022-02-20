@@ -60,25 +60,52 @@ const Listings = () => {
 
   return (
     <Box>
-      <Box justify="center" pad="none" margin={{ top: "small" }}>
-        <Heading level="4" alignSelf="center" textAlign="center">
-          Buy and sell locally with crypto <u>escrow</u> incentivized exchange!
-        </Heading>
-      </Box>
+      <ResponsiveContext.Consumer>
+        {(size) =>
+          size === "small" ? (
+            <Box pad="large" align="center">
+              <Grid
+                columns={["medium"]}
+                rows="medium"
+                gap="medium"
+                pad="medium"
+                margin="medium"
+              >
+                {listings.length > 0 &&
+                  listings.map((address) => (
+                    <ListingCard listingAddress={address} key={address} />
+                  ))}
+              </Grid>
+              {listings.length === 0 && <CreateListingHint />}
+            </Box>
+          ) : (
+            <Box>
+              <Box justify="center" pad="none" margin={{ top: "small" }}>
+                <Heading level="4" alignSelf="center" textAlign="center">
+                  Buy and sell locally with crypto <u>escrow</u> incentivized
+                  exchange!
+                </Heading>
+              </Box>
 
-      <Box pad="large" align="center">
-        <Grid
-          columns={["small", "small", "small", "small", "small"]}
-          rows="medium"
-          gap="medium"
-          pad="none"
-          margin="none"
-        >
-          {listings.length > 0 &&
-            listings.map((address) => <ListingCard listingAddress={address} />)}
-        </Grid>
-        {listings.length === 0 && <CreateListingHint />}
-      </Box>
+              <Box pad="large" align="center">
+                <Grid
+                  columns={["small", "small", "small", "small", "small"]}
+                  rows="medium"
+                  gap="medium"
+                  pad="none"
+                  margin="none"
+                >
+                  {listings.length > 0 &&
+                    listings.map((address) => (
+                      <ListingCard listingAddress={address} />
+                    ))}
+                </Grid>
+                {listings.length === 0 && <CreateListingHint />}
+              </Box>
+            </Box>
+          )
+        }
+      </ResponsiveContext.Consumer>
     </Box>
   );
 };

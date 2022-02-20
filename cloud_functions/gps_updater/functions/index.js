@@ -105,7 +105,7 @@ const handleGetRequest = async (request) => {
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
 exports.updateLocation = functions.https.onRequest( (request, response) => {
-  response.set('Access-Control-Allow-Origin', '*');
+  response.set('Access-Control-Allow-Origin', 'localhost:3000');
   response.set('Access-Control-Allow-Headers', '*');
   response.set('Access-Control-Allow-Methods', '*');
   response.set('Access-Control-Max-Age', '3600');

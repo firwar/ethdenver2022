@@ -22,6 +22,8 @@ const WalletButton = () => {
         !provider ? "Connect Wallet" : `${signedInAddress} Disconnect Wallet`
       }
       onClick={() => {
+        console.log(provider);
+        console.log("hi");
         if (!provider) {
           loadWeb3Modal();
         } else {
