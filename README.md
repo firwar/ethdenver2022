@@ -45,7 +45,7 @@ around how to commit and exchange goods.
 
 # Solution
 
-Lock and swap is a decentralized version of OfferUp where the sellers and buyers
+ExchangeIt is a decentralized version of OfferUp where the sellers and buyers
 must go through a series of steps facilitated by smart contracts
 
 The overall steps are:
