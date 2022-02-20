@@ -1,2 +1,2 @@
-export { default as Listings } from './listings';
-export { default as MyListings } from './mylistings';
+export { default as Listings } from "./listings";
+export { default as MyListings } from "./mylistings";

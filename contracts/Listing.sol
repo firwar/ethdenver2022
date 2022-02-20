@@ -3,12 +3,15 @@
 // It will be used by the Solidity compiler to validate its version.
 pragma solidity ^0.6.12;
 
+import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 import '@openzeppelin/contracts/access/AccessControl.sol';
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/payment/escrow/Escrow.sol";
 
 // This is the main building block for smart contracts.
-contract Listing is Ownable, AccessControl {
+contract Listing is Ownable, AccessControl, ChainlinkClient {
+
+    using Chainlink for Chainlink.Request;
 
     enum ListingState { Open, Locked, SellerUnlocked, BuyerUnlocked, Canceled, Completed }
 
@@ -45,7 +48,12 @@ contract Listing is Ownable, AccessControl {
     event ListingCancelled();
     event SellerUnlocked();
     event BuyerUnlocked();
-    event ListingCompeted();
+    event ListingCompleted(address listing);
+
+    // EA Information
+    address private oracle = 0xa94fcD7aaeD52a5D8a525319B16b4d3296a02F6A;
+    bytes32 private eaJobId = "fc173fc92d5748cc8d76ceb21d442a56";
+    uint256 private fee = 0.1 * 10 ** 18;
 
     Escrow escrow;
 
@@ -214,6 +222,46 @@ contract Listing is Ownable, AccessControl {
             listingOffers[msg.sender] = 0;
             escrow.withdraw(msg.sender);
         }
+    }
+
+    /**
+     * @dev
+     * Create a Chainlink request to query whether or not buyer and seller are nearby
+     */
+    function requestUserLocation() public returns (bytes32 requestId)
+    {
+        Chainlink.Request memory req = buildChainlinkRequest(eaJobId, address(this), this.fulfillUserLocationRequest.selector);
+        req.add("buyerAddress", addressToString(buyerAddress));
+        req.add("sellerAddress", addressToString(sellerAddress));
+        // Sends the request
+        bytes32 _requestId = sendChainlinkRequestTo(oracle, req, fee);
+        return _requestId;
+    }
+
+    /**
+     * @dev
+     * Receive the response in the form of bool if they're nearby
+     */
+    function fulfillUserLocationRequest(bytes32 requestId, bool nearby) public recordChainlinkFulfillment(requestId)
+    {
+        // If nearby is true we unlock the pact
+        if (nearby) {
+            listingState = ListingState.Completed;
+            emit ListingCompleted(address(this));
+        }
+    }
+
+    function addressToString(address _address) public pure returns(string memory) {
+        bytes32 _bytes = bytes32(uint256(uint160(_address)));
+        bytes memory HEX = "0123456789abcdef";
+        bytes memory _string = new bytes(42);
+        _string[0] = '0';
+        _string[1] = 'x';
+        for(uint i = 0; i < 20; i++) {
+            _string[2+i*2] = HEX[uint8(_bytes[i + 12] >> 4)];
+            _string[3+i*2] = HEX[uint8(_bytes[i + 12] & 0x0f)];
+        }
+        return string(_string);
     }
 
 }

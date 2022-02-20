@@ -5,11 +5,15 @@ import {
   Card,
   CardBody,
   CardFooter,
+  CardHeader,
   Grommet,
   Heading,
   Image,
   Spinner,
+  Stack,
+  Text,
 } from "grommet";
+import { Money } from "grommet-icons";
 import { ethers } from "ethers";
 import { Contract } from "@ethersproject/contracts";
 import { useRouter } from "next/router";
@@ -24,6 +28,9 @@ import ListingContext from "../hooks/useListing";
 import { CardWithText } from "./cardWithText";
 import SignerContext from "../hooks/useSigner";
 import ExchangeItGatewayContext from "../hooks/useExchangeItGateway";
+import { Icon } from "@iconify/react";
+import usdIcon from "@iconify-icons/cryptocurrency/usd";
+import maticIcon from "@iconify-icons/cryptocurrency/matic";
 
 export const LISTING_STATES = {
   0: "Open",
@@ -213,25 +220,86 @@ const Listing = ({ address }) => {
 
   // TODO load image from ipfs
   return (
-    <Grommet>
+    <Box>
       {!loading && (
         <Box pad="medium" align="center" gap="medium">
           <Card elevation="large" width="medium">
-            <CardBody height="small">
-              <Image fit="cover" src={imageLink} />
+            <Stack anchor="bottom-left">
+              <CardBody height="medium">
+                <Image fit="cover" src={imageLink} />
+              </CardBody>
+              <CardHeader
+                pad={{ horizontal: "small", vertical: "small" }}
+                // https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4#all-hex-value-from-100-to-0-alpha
+                background="#000000A0"
+                width="medium"
+              >
+                <Box
+                  direction="row"
+                  justify="between"
+                  align="center"
+                  alignContent="between"
+                  gap="medium"
+                  size="medium"
+                >
+                  <Box
+                    direction="row"
+                    justify="between"
+                    align="center"
+                    alignContent="between"
+                    gap="medium"
+                    size="medium"
+                  >
+                    <Icon icon={usdIcon} color="white" />
+                    <Heading level="3" margin="none">
+                      {price}
+                    </Heading>
+                  </Box>
+                  <Box width="small"></Box>
+                  <Box
+                    direction="row"
+                    justify="between"
+                    align="center"
+                    alignContent="between"
+                    gap="medium"
+                    size="medium"
+                  >
+                    <Icon icon={maticIcon} color="white" />
+                    <Heading level="3" margin="none">
+                      {price}
+                    </Heading>
+                  </Box>
+                </Box>
+              </CardHeader>
+            </Stack>
 
-            </CardBody>
             <CardFooter>
               <Box pad={{ horizontal: "medium" }} responsive={false}>
-                <Heading level="3" margin={{ vertical: "medium" }}>
-                  {title}
-                </Heading>
+                <Box
+                  direction="row"
+                  justify="between"
+                  align="center"
+                  alignContent="between"
+                  gap="small"
+                  margin={{ vertical: "medium" }}
+                >
+                  <Heading level="3" textAlign="start">
+                    {title}
+                  </Heading>
+                  <Heading
+                    level="5"
+                    textAlign="end"
+                    margin="none"
+                    color="dark-3"
+                  >
+                    {location}
+                  </Heading>
+                </Box>
                 <ListingInformation
-                  price={price}
-                  escrow={minimumEscrow}
                   contactInfo={contactInfo}
                   location={location}
                   description={description}
+                  sellerAddress={sellerAddress}
                 />
               </Box>
             </CardFooter>
@@ -277,7 +345,7 @@ const Listing = ({ address }) => {
           <Spinner size="large" />
         </Box>
       )}
-    </Grommet>
+    </Box>
   );
 };
 

@@ -72,7 +72,15 @@ export const BuyerSubmitOffer = () => {
                 validate={[{ regexp: /^[0-9]{6}$/i }]}
               />
               <Box direction="row" justify="end" margin={{ top: "medium" }}>
-                <Button type="submit" label="Submit Offer" primary />
+                <Button
+                  type="submit"
+                  label="Submit Offer"
+                  color="accent-4"
+                  style={{
+                    borderRadius: 2,
+                  }}
+                  primary
+                />
               </Box>
             </Form>
           </Box>

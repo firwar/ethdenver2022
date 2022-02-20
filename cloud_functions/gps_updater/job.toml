@@ -1,0 +1,24 @@
+type = "directrequest"
+schemaVersion = 1
+name = "Am-I-Close-Enough"
+contractAddress = "0xa94fcD7aaeD52a5D8a525319B16b4d3296a02F6A"
+maxTaskDuration = "0s"
+observationSource = """
+    decode_log   [type=ethabidecodelog
+                  abi="OracleRequest(bytes32 indexed specId, address requester, bytes32 requestId, uint256 payment, address callbackAddr, bytes4 callbackFunctionId, uint256 cancelExpiration, uint256 dataVersion, bytes data)"
+                  data="$(jobRun.logData)"
+                  topics="$(jobRun.logTopics)"]
+
+    decode_cbor  [type=cborparse data="$(decode_log.data)"]
+    fetch        [type=bridge name="gpslocation" requestData="{\\"id\\": $(jobSpec.externalJobID), \\"data\\": { \\"user\\": $(decode_cbor.user), \\"user\\": $(decode_cbor.user) }}"]
+    parse        [type=jsonparse path="data" data="$(fetch)"]
+    encode_data  [type=ethabiencode abi="(bool value)" data="{ \\"value\\": $(parse) }"]
+    encode_tx    [type=ethabiencode
+                  abi="fulfillOracleRequest(bytes32 requestId, uint256 payment, address callbackAddress, bytes4 callbackFunctionId, uint256 expiration, bytes32 data)"
+                  data="{\\"requestId\\": $(decode_log.requestId), \\"payment\\": $(decode_log.payment), \\"callbackAddress\\": $(decode_log.callbackAddr), \\"callbackFunctionId\\": $(decode_log.callbackFunctionId), \\"expiration\\": $(decode_log.cancelExpiration), \\"data\\": $(encode_data)}"
+                 ]
+    submit_tx    [type=ethtx to="0xa94fcD7aaeD52a5D8a525319B16b4d3296a02F6A" data="$(encode_tx)"]
+
+    decode_log -> decode_cbor -> fetch -> parse -> encode_data -> encode_tx -> submit_tx
+"""
+externalJobID = "fc173fc9-2d57-48cc-8d76-ceb21d442a57"

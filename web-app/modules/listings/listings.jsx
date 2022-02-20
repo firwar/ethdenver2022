@@ -21,6 +21,7 @@ const Listings = () => {
   const { provider } = useContext(ProviderContext);
   const { signer } = useContext(SignerContext);
   const [listings, setListings] = useState([]);
+  const [currentUserAddress, setCurrentUserAddress] = useState();
 
   useEffect(() => {
     if (exchangeItGateway === null || provider === null || signer == null) {
@@ -54,32 +55,65 @@ const Listings = () => {
       );
 
       setListings(listingsToDisplay);
+
+      const _address = await signer.getAddress();
+      setCurrentUserAddress(_address);
     }
     getListings();
   }, [exchangeItGateway, provider, signer]);
 
   return (
-    <Grommet theme={grommet}>
-      <Box justify="center" pad="none" margin={{ top: "small" }}>
-        <Heading level="4" alignSelf="center" textAlign="center">
-          Buy and sell locally with crypto <u>escrow</u> incentivized exchange!
-        </Heading>
-      </Box>
+    <Box>
+      <ResponsiveContext.Consumer>
+        {(size) =>
+          size === "small" ? (
+            <Box pad="large" align="center">
+              <Grid
+                columns={["medium"]}
+                rows="medium"
+                gap="medium"
+                pad="medium"
+                margin="medium"
+              >
+                {listings.length > 0 &&
+                  listings.map((address) => (
+                    <ListingCard listingAddress={address} key={address} />
+                  ))}
+              </Grid>
+              {listings.length === 0 && <CreateListingHint />}
+            </Box>
+          ) : (
+            <Box>
+              <Box justify="center" pad="none" margin={{ top: "small" }}>
+                <Heading level="4" alignSelf="center" textAlign="center">
+                  Buy and sell locally with crypto <u>escrow</u> incentivized
+                  exchange!
+                </Heading>
+              </Box>
 
-      <Box pad="large" align="center">
-        <Grid
-          columns={["small", "small", "small", "small", "small"]}
-          rows="medium"
-          gap="medium"
-          pad="none"
-          margin="none"
-        >
-          {listings.length > 0 &&
-            listings.map((address) => <ListingCard listingAddress={address} />)}
-        </Grid>
-        {listings.length === 0 && <CreateListingHint />}
-      </Box>
-    </Grommet>
+              <Box pad="large" align="center">
+                <Grid
+                  columns={["small", "small", "small", "small", "small"]}
+                  rows="medium"
+                  gap="medium"
+                  pad="none"
+                  margin="none"
+                >
+                  {listings.length > 0 &&
+                    listings.map((address) => (
+                      <ListingCard
+                        listingAddress={address}
+                        currentUserAddress={currentUserAddress}
+                      />
+                    ))}
+                </Grid>
+                {listings.length === 0 && <CreateListingHint />}
+              </Box>
+            </Box>
+          )
+        }
+      </ResponsiveContext.Consumer>
+    </Box>
   );
 };
 

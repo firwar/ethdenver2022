@@ -1,13 +1,8 @@
 import React from "react";
-import { Lock, Add, Update } from "grommet-icons";
 import { Box, Heading } from "grommet";
 import Link from "next/link";
-import { SearchBar } from "./searchBar";
 
 const LogoHeader = () => {
-  const setQuery = (query) => {
-    console.log(query);
-  };
   return (
     <Link href="/listings">
       <Box
@@ -18,9 +13,8 @@ const LogoHeader = () => {
         focusIndicator={false}
       >
         <Heading level={3} size="medium" margin="none">
-          Lock&Swap
+          ExchangeIt
         </Heading>
-        <SearchBar setQuery={setQuery} />
       </Box>
     </Link>
   );
