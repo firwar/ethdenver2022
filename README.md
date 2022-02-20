@@ -1,7 +1,6 @@
 # ExchangeIt
 
-ExhangeIt is a decentralized mobile marketplace for individuals to
-create listings and submit offers for local goods around their location. Transactions are backed by smart contract escrowing and completed using a GPS backed Chainlink Oracle. Disputes and bad actors are regulated by a DAO governance.
+ExhangeIt is a decentralized mobile marketplace for individuals to create listings and submit offers for local goods around their location. Transactions are enforced by smart contract escrowing and completed using a GPS backed Chainlink EA. Disputes and bad actors are regulated by a DAO governance.
 
 The problem that ExhangeIt is addressing relates to the user experience of selling goods in an online marketplace and completing the transaction in person. This is accomplished through incentivization.
 
