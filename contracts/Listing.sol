@@ -3,7 +3,7 @@
 // It will be used by the Solidity compiler to validate its version.
 pragma solidity ^0.6.12;
 
-import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
+import "@chainlink/contracts/src/v0.6/ChainlinkClient.sol";
 import '@openzeppelin/contracts/access/AccessControl.sol';
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/payment/escrow/Escrow.sol";
