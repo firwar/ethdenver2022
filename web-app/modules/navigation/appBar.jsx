@@ -7,6 +7,7 @@ import {
   Header,
   Menu,
   ResponsiveContext,
+  Stack,
   Text,
 } from "grommet";
 import { Menu as MenuIcon, Currency, Money } from "grommet-icons";
@@ -36,11 +37,13 @@ const theme = {
 const AppBar = (props) => {
   const { provider } = useContext(ProviderContext);
 
+  // Use the user address here later
   const gravatarLink =
-    "//s.gravatar.com/avatar/b7fb138d53ba0f573212ccce38a7c43b?s=80";
+    "https://www.gravatar.com/avatar/0xa2d6c4297Eec8a25226AE0dc77344B0BDEBF442a?s=32&d=identicon&r=PG";
   const [ethAmount, setEthAmount] = useState(0);
   // Use the Web3 Provider for now
   const [loadWeb3Modal, logoutOfWeb3Modal, signedInAddress] = useWeb3Modal();
+  const [status, setStatus] = useState(false);
 
   return (
     <Grommet theme={theme}>
@@ -48,23 +51,32 @@ const AppBar = (props) => {
         {(size) =>
           size === "small" ? (
             <Header pad="large">
-              <Avatar
-                src={gravatarLink}
-                onClick={() => {
-                  console.log(provider);
-                  console.log("hi");
-                  if (!provider) {
-                    loadWeb3Modal();
-                  } else {
-                    logoutOfWeb3Modal();
-                  }
-                }}
-              />
+              <Stack anchor="top-right">
+                <Avatar
+                  src={gravatarLink}
+                  onClick={() => {
+                    console.log(provider);
+                    if (!provider) {
+                      loadWeb3Modal();
+                      setStatus(true);
+                    } else {
+                      logoutOfWeb3Modal();
+                      setStatus(false);
+                    }
+                  }}
+                />
+                <Box
+                  pad="xsmall"
+                  round
+                  background={status ? "status-ok" : "dark-6"}
+                  responsive={false}
+                />
+              </Stack>
               <Text>ExchangeIt</Text>
               <Button
                 icon={<Money />}
                 gap="small"
-                label={`ETH ${ethAmount}`}
+                label={`EIT ${ethAmount}`}
                 onClick={() => {}}
                 color="accent-4"
                 primary

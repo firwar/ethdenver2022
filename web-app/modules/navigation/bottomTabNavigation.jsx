@@ -17,6 +17,7 @@ import {
   ChatOption,
   Favorite,
   Contract,
+  ChapterAdd,
 } from "grommet-icons";
 import { useRouter } from "next/router";
 import ModalContext from "../hooks/useModal";
@@ -35,7 +36,6 @@ const BottomTabNavigation = (props) => {
           align="center"
           justify="between"
           pad={{ left: "medium", right: "small", vertical: "small" }}
-          elevation="medium"
           round="xlarge"
           background="dark-1"
           style={{
@@ -68,7 +68,7 @@ const BottomTabNavigation = (props) => {
             style={{ backgroundColor: "transparent" }}
           />
           <Button
-            icon={<Contract color="light-1" />}
+            icon={<ChapterAdd color="light-1" />}
             gap="small"
             onClick={() => {
               router.push(`/listings/create`);

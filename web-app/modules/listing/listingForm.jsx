@@ -1,6 +1,14 @@
 import React, { useContext, useState, useEffect, useCallback } from "react";
 import { ethers } from "ethers";
-import { Box, Button, Form, FormField, Grommet, Spinner } from "grommet";
+import {
+  Box,
+  Button,
+  Form,
+  FormField,
+  Grommet,
+  Heading,
+  Spinner,
+} from "grommet";
 import { useRouter } from "next/router";
 import PinataFile from "../pinata/pinataFile";
 import ExchangeItGatewayContext from "../hooks/useExchangeItGateway";
@@ -93,107 +101,117 @@ const ListingForm = () => {
   };
 
   return (
-    <Box>
-      <Box fill overflow="auto" align="center" justify="center" pad="large">
-        <Box flex={false} width="medium" gap="small">
-          <PinataFile setIpfsHash={setIpfsHash} />
-        </Box>
-        <Box flex={false} width="medium" gap="small">
-          <Form onSubmit={onSubmit} onChange={onChange}>
-            <FormField
-              label="Title"
-              name="title"
-              required
-              validate={[
-                { regexp: /^[a-z]/i },
-                (name) => {
-                  if (name && name.length === 1) return "must be >1 character";
-                  return undefined;
-                },
-                (name) => {
-                  if (name && name.length <= 2)
-                    return { message: "that's short", status: "info" };
-                  return undefined;
-                },
-              ]}
-            />
-            <FormField
-              label="Description"
-              name="description"
-              required
-              validate={[
-                (name) => {
-                  if (name && name.length === 1) return "must be >1 character";
-                  return undefined;
-                },
-                (name) => {
-                  if (name && name.length <= 2)
-                    return { message: "that's short", status: "info" };
-                  return undefined;
-                },
-              ]}
-            />
-            <FormField
-              label="Location"
-              name="location"
-              required
-              validate={[
-                { regexp: /^[a-z]/i },
-                (name) => {
-                  if (name && name.length === 1) return "must be >1 character";
-                  return undefined;
-                },
-                (name) => {
-                  if (name && name.length <= 2)
-                    return { message: "that's short", status: "info" };
-                  return undefined;
-                },
-              ]}
-            />
-            <FormField label="Contact" name="contact" required />
-            <FormField
-              label="Price (USD)"
-              name="price"
-              required
-              validate={[
-                { regexp: /^[0-9]*$/i },
-                (name) => {
-                  if (name <= 0) return "must be > 0 USD";
-                  return undefined;
-                },
-              ]}
-            />
-            <FormField
-              label="Minimum Escrow (Matic)"
-              name="minEscrow"
-              required
-              validate={[
-                (name) => {
-                  if (name < 0.1) return "must be > 0.1 Matic";
-                  return undefined;
-                },
-              ]}
-            />
-            <FormField
-              label="6 Digit Lock Code"
-              name="lockCode"
-              required
-              validate={[{ regexp: /^[0-9]{6}$/i }]}
-            />
-            <Box
-              direction="column"
-              justify="center"
-              align="center"
-              margin={{ top: "medium" }}
-              gap="medium"
-            >
-              <Button type="submit" label="Submit" primary />
-              {creating && (
-                <Spinner message="Start Built-in Spinner Announcement" />
-              )}
-            </Box>
-          </Form>
-        </Box>
+    <Box
+      fill
+      overflow="auto"
+      align="start"
+      justify="center"
+      pad="large"
+      style={{ paddingTop: 0 }}
+    >
+      <Box>
+        <Heading level="2" margin={{ horizontal: "xsmall", vertical: "small" }}>
+          Create New Listing
+        </Heading>
+      </Box>
+      <Box flex={false} width="medium" gap="small">
+        <PinataFile setIpfsHash={setIpfsHash} />
+      </Box>
+      <Box flex={false} width="medium" gap="small">
+        <Form onSubmit={onSubmit} onChange={onChange}>
+          <FormField
+            label="Title"
+            name="title"
+            required
+            validate={[
+              { regexp: /^[a-z]/i },
+              (name) => {
+                if (name && name.length === 1) return "must be >1 character";
+                return undefined;
+              },
+              (name) => {
+                if (name && name.length <= 2)
+                  return { message: "that's short", status: "info" };
+                return undefined;
+              },
+            ]}
+          />
+          <FormField
+            label="Description"
+            name="description"
+            required
+            validate={[
+              (name) => {
+                if (name && name.length === 1) return "must be >1 character";
+                return undefined;
+              },
+              (name) => {
+                if (name && name.length <= 2)
+                  return { message: "that's short", status: "info" };
+                return undefined;
+              },
+            ]}
+          />
+          <FormField
+            label="Location"
+            name="location"
+            required
+            validate={[
+              { regexp: /^[a-z]/i },
+              (name) => {
+                if (name && name.length === 1) return "must be >1 character";
+                return undefined;
+              },
+              (name) => {
+                if (name && name.length <= 2)
+                  return { message: "that's short", status: "info" };
+                return undefined;
+              },
+            ]}
+          />
+          <FormField label="Contact" name="contact" required />
+          <FormField
+            label="Price (USD)"
+            name="price"
+            required
+            validate={[
+              { regexp: /^[0-9]*$/i },
+              (name) => {
+                if (name <= 0) return "must be > 0 USD";
+                return undefined;
+              },
+            ]}
+          />
+          <FormField
+            label="Minimum Escrow (Matic)"
+            name="minEscrow"
+            required
+            validate={[
+              (name) => {
+                if (name < 0.1) return "must be > 0.1 Matic";
+                return undefined;
+              },
+            ]}
+          />
+          <FormField
+            label="6 Digit Lock Code"
+            name="lockCode"
+            required
+            validate={[{ regexp: /^[0-9]{6}$/i }]}
+          />
+          <Box
+            direction="column"
+            justify="center"
+            align="center"
+            margin={{ top: "medium" }}
+            gap="medium"
+          >
+            <Button type="submit" label="Submit" primary />
+            {creating && (
+              <Spinner message="Start Built-in Spinner Announcement" />
+            )}
+          </Box>
+        </Form>
       </Box>
     </Box>
   );

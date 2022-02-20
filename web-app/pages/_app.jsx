@@ -122,22 +122,22 @@ function MyApp({ Component, pageProps }) {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         };
-        // fetch(CF_UPDATE_URL, {
-        //   method: "POST", // *GET, POST, PUT, DELETE, etc.
-        //   headers: {
-        //     Accept: "application/json",
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: geoData,
-        // })
-        //   .then((res) => {
-        //     console.log(res);
-        //   })
-        //   .catch((e) => {
-        //     console.log(e);
-        //   });
+        fetch(CF_UPDATE_URL, {
+          method: "POST", // *GET, POST, PUT, DELETE, etc.
+          mode: "no-cors",
+          headers: {
+            Accept: "application/json",
+          },
+          body: JSON.stringify(geoData),
+        })
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
       });
-    }, 10000);
+    }, ONE_MINUTE);
 
     return function cleanup() {
       clearInterval(periodic);
