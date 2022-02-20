@@ -1,57 +1,64 @@
 import React from "react";
-import { Box, Card, Heading, Paragraph, Text } from "grommet";
+import { Avatar, Box, Card, Heading, Paragraph, Text } from "grommet";
 import { Icon } from "@iconify/react";
 import usdIcon from "@iconify-icons/cryptocurrency/usd";
 import maticIcon from "@iconify-icons/cryptocurrency/matic";
 
 export const ListingInformation = ({
-  price,
-  escrow,
   contactInfo,
-  location,
   description,
-}) => (
-  <Box gap="xsmall" margin={{ top: "none" }}>
-    <Box align="start" direction="column" gap="xxsmall">
-      <Heading level="4" textAlign="start" margin="none">
-        Description:
+  sellerAddress,
+}) => {
+  const gravatarLink = `https://www.gravatar.com/avatar/${sellerAddress}?s=32&d=robohash&r=PG`;
+
+  return (
+    <Box gap="xsmall" margin={{ top: "none", bottom: "large" }}>
+      <Heading level="5" textAlign="start" margin="none" color="dark-3">
+        Seller
       </Heading>
-      <Paragraph margin={{ vertical: "xsmall" }}>{description}</Paragraph>
+      <Box
+        height="xxsmall"
+        direction="row"
+        justify="center"
+        align="center"
+        alignContent="between"
+        round={false}
+      >
+        <Box
+          direction="row"
+          justify="between"
+          align="center"
+          alignContent="between"
+          gap="medium"
+        >
+          <Box width="xxsmall">
+            <Avatar src={gravatarLink} size="small" />
+          </Box>
+          <Box width="small">
+            <Heading level="4" truncate>
+              {sellerAddress}
+            </Heading>
+          </Box>
+          <Box width="small" align="end">
+            <Heading level="4" truncate>
+              {contactInfo}
+            </Heading>
+          </Box>
+        </Box>
+      </Box>
+      <Box
+        align="start"
+        direction="column"
+        gap="xxsmall"
+        margin={{ top: "medium" }}
+      >
+        <Heading level="4" textAlign="start" margin="none">
+          Description
+        </Heading>
+        <Paragraph size="small" margin={{ vertical: "xsmall" }}>
+          {description}
+        </Paragraph>
+      </Box>
     </Box>
-    <Box align="center" direction="row" gap="xsmall">
-      <Heading level="4" textAlign="start" margin="none">
-        Price:{" "}
-      </Heading>
-      <Icon icon={usdIcon} color="darkGreen" />
-      <Text level="3" textAlign="start" margin="none">
-        {price}
-      </Text>
-    </Box>
-    <Box align="center" direction="row" gap="xsmall">
-      <Heading level="4" textAlign="start" margin="none">
-        Escrow:{" "}
-      </Heading>
-      <Icon icon={maticIcon} color="blueViolet" />
-      <Text level="3" textAlign="start" margin="none">
-        {escrow}
-      </Text>
-    </Box>
-    <Box align="center" direction="row" gap="xsmall">
-      <Heading level="4" textAlign="start" margin="none">
-        Contact:{" "}
-      </Heading>
-      <Text level="3" textAlign="start" margin="none">
-        {contactInfo}
-      </Text>
-    </Box>
-    <Box align="center" direction="row" gap="xsmall">
-      <Heading level="4" textAlign="start" margin="none">
-        Location:{" "}
-      </Heading>
-      <Text level="3" textAlign="start" margin="none">
-        {location}
-      </Text>
-    </Box>
-    <br />
-  </Box>
-);
+  );
+};

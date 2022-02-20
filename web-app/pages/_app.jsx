@@ -46,6 +46,7 @@ export const customTheme = deepFreeze({
     },
   },
   button: {
+    borderRadius: 2,
     padding: {
       horizontal: "12px",
     },

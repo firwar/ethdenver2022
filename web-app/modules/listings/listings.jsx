@@ -21,6 +21,7 @@ const Listings = () => {
   const { provider } = useContext(ProviderContext);
   const { signer } = useContext(SignerContext);
   const [listings, setListings] = useState([]);
+  const [currentUserAddress, setCurrentUserAddress] = useState();
 
   useEffect(() => {
     if (exchangeItGateway === null || provider === null || signer == null) {
@@ -54,6 +55,9 @@ const Listings = () => {
       );
 
       setListings(listingsToDisplay);
+
+      const _address = await signer.getAddress();
+      setCurrentUserAddress(_address);
     }
     getListings();
   }, [exchangeItGateway, provider, signer]);
@@ -97,7 +101,10 @@ const Listings = () => {
                 >
                   {listings.length > 0 &&
                     listings.map((address) => (
-                      <ListingCard listingAddress={address} />
+                      <ListingCard
+                        listingAddress={address}
+                        currentUserAddress={currentUserAddress}
+                      />
                     ))}
                 </Grid>
                 {listings.length === 0 && <CreateListingHint />}

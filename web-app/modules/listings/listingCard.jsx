@@ -28,70 +28,18 @@ import { FormClose } from "grommet-icons";
 import ModalContext from "../hooks/useModal";
 import ExchangeItGatewayContext from "../hooks/useExchangeItGateway";
 import ToastContext from "../hooks/useToast";
-import { Head } from "next/document";
-
-// <Box
-//   pad={{ horizontal: "small" }}
-//   responsive
-//   justify="between"
-//   align="center"
-//   direction="row"
-//   height="xxsmall"
-// >
-//   <Heading
-//     level="5"
-//     pad={{ horizontal: "medium" }}
-//     textAlign="start"
-//     truncate
-//   >
-//     {title}
-//   </Heading>
-// </Box>
-// <Box
-//   pad={{ horizontal: "small", vertical: "none" }}
-//   margin="none"
-//   responsive
-//   align="center"
-//   direction="row"
-//   height="xxsmall"
-//   gap="xsmall"
-// >
-//   <Heading level="5" textAlign="start">
-//     Price:
-//   </Heading>
-//   <Icon icon={usdIcon} color="darkGreen" />
-//   <Heading level="5" textAlign="start">
-//     {price}
-//   </Heading>
-// </Box>
-// <Box
-//   pad={{ horizontal: "small", vertical: "none" }}
-//   responsive
-//   align="center"
-//   direction="row"
-//   height="xxsmall"
-//   gap="xsmall"
-// >
-//   <Heading level="5" textAlign="start">
-//     Escrow:
-//   </Heading>
-//   <Icon icon={maticIcon} color="blueViolet" />
-//   <Heading level="5" textAlign="start">
-//     {escrow}
-//   </Heading>
-// </Box>
-// <Box pad={{ horizontal: "small" }} responsive={false}>
-//   <Heading level="6" margin={{ vertical: "none" }} color="dark-3">
-//     {location}
-//   </Heading>
-// </Box>
+import SubmitOffer from "../listing/submitOffer";
+import { getRandomString } from "../utils";
+import { useRouter } from "next/router";
 
 const fakeOffers = {
   "0x02d6c4297Eec8a25226AE0dc77344B0BDEBF442a": 100,
-  "0x12d6c4297Eec8a25226AE0dc77344B0BDEBF442a": 100,
+  "0x12d6c4297Eeaaaa226AE0dc77bbbbbbbbbbbb42a": 100,
+  "0xa2d6c4297Eec8a25226AE0dc77344B0BDEBF442a": 200,
 };
 
-export const ListingCard = ({ listingAddress }) => {
+export const ListingCard = ({ listingAddress, currentUserAddress }) => {
+  const router = useRouter();
   const [signer, setSigner] = useState(null);
   const { exchangeItGateway } = useContext(ExchangeItGatewayContext);
   const [contract, setContract] = useState(null);
@@ -104,6 +52,7 @@ export const ListingCard = ({ listingAddress }) => {
   const [escrow, setEscrow] = useState("");
   const [offers, setOffers] = useState({});
   const { setToast } = useContext(ToastContext);
+  const [submittedOffer, setSubmittedOffer] = useState(false);
 
   // Modal stuff
   const { setModalOpen } = useContext(ModalContext);
@@ -157,8 +106,14 @@ export const ListingCard = ({ listingAddress }) => {
       .getListingOffers();
     const listingOfferAddress = listingOffersTuples[0];
     const listingMap = {};
-    listingOfferAddress.forEach((userAddress, index) => {
-      listingMap[userAddress] = listingOffersTuples[1];
+    listingOfferAddress.forEach((userAddress) => {
+      console.log(`${userAddress} - ${currentUserAddress}`);
+      if (userAddress === currentUserAddress) {
+        listingMap["You"] = listingOffersTuples[1];
+        setSubmittedOffer(true);
+      } else {
+        listingMap[userAddress] = listingOffersTuples[1];
+      }
     });
     console.log(listingMap);
     // setOffers(listingMap);
@@ -223,11 +178,13 @@ export const ListingCard = ({ listingAddress }) => {
       return;
     }
 
+    const unlockCode = getRandomString(6);
+    console.log(`Unlock Code ${unlockCode}`);
     // Store the key on local storage for the person buying
     if (typeof window !== "undefined") {
       // This is probably ok because you most likely wouldn't share the same phone/browser w/ counterparty
       const key = `buyer_${listingAddress}_unlock_code`;
-      localStorage.setItem(key, value.lockCode);
+      localStorage.setItem(key, unlockCode);
     }
 
     try {
@@ -235,7 +192,7 @@ export const ListingCard = ({ listingAddress }) => {
         .connect(signer)
         .submitOffer(
           listingAddress,
-          ethers.utils.solidityKeccak256(["string"], [value.lockCode]),
+          ethers.utils.solidityKeccak256(["string"], [unlockCode]),
           { value: ethers.utils.parseUnits(value.escrow.toString(), "ether") }
         );
       // TODO: Change this to waiting for event
@@ -338,12 +295,13 @@ export const ListingCard = ({ listingAddress }) => {
             <Box height="medium">
               <Image fit="cover" src={imageLink} />
             </Box>
-
             <Box>
               <Heading margin="small" level="3">
                 Description
               </Heading>
-              <Paragraph style={{ margin: "6px" }}>{description}</Paragraph>
+              <Paragraph size="small" style={{ margin: "6px" }}>
+                {description}
+              </Paragraph>
             </Box>
             <Heading margin="small" level="3">
               Top Offer
@@ -363,51 +321,36 @@ export const ListingCard = ({ listingAddress }) => {
                 getOfferCards()
               )}
             </Box>
-            <Heading margin="small" level="3">
-              Your Offer
-            </Heading>
-            <Box
-              direction="row"
-              justify="between"
-              align="center"
-              alignContent="between"
-              pad="small"
-            >
-              <Box
-                pad={{ horizontal: "small", vertical: "none" }}
-                responsive
-                align="center"
-                direction="column"
-                height="xxsmall"
-                gap="xsmall"
-                style={{ paddingLeft: "0px" }}
-              >
-                <Box style={{ marginRight: "24px" }}>
-                  <TextInput
-                    placeholder={price}
-                    value={offerValue}
-                    onChange={(event) => setOfferValue(event.target.value)}
-                  />
-                </Box>
+            {submittedOffer ? (
+              <Box>
+                <Button
+                  alignSelf="center"
+                  label="View Exchange Instructions"
+                  onClick={() => {
+                    setModalOpen(false);
+                    router.push(`/listing/${listingAddress}`);
+                  }}
+                  style={{
+                    borderRadius: 2,
+                  }}
+                  primary
+                />
               </Box>
-              <Button
-                gap="small"
-                onClick={() => {
-                  submitOffer();
-                }}
-                label="Offer"
-                size="large"
-                type="submit"
-                color="accent-4"
-                style={{
-                  borderRadius: 2,
-                }}
-                primary
+            ) : (
+              <SubmitOffer
+                price={price}
+                offerValue={offerValue}
+                setOfferValue={setOfferValue}
+                submitOffer={submitOffer}
               />
-            </Box>
+            )}
           </Box>
           <Box>
-            <Button alignSelf="center" icon={<FormClose />} onClick={onClose} />
+            <Button
+              alignSelf="center"
+              icon={<FormClose color="white" />}
+              onClick={onClose}
+            />
           </Box>
         </Layer>
       )}
