@@ -1,10 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Box, Grid, grommet, Grommet } from "grommet";
+import { Box, Grid, grommet, Grommet, ResponsiveContext } from "grommet";
 import { Contract } from "@ethersproject/contracts";
 import { ethers } from "ethers";
 import { ProviderContext } from "../hooks";
 import { abis } from "../contracts";
 import { ListingCard } from "./listingCard";
+import { ListingCard2 } from "./listingCard2";
 import SignerContext from "../hooks/useSigner";
 import ExchangeItGatewayContext from "../hooks/useExchangeItGateway";
 
@@ -58,8 +59,59 @@ const MyListings = () => {
   }, [exchangeItGateway]);
 
   return (
+
     <Grommet theme={grommet}>
+      <ResponsiveContext.Consumer>
+        {(size) =>
+          size === "small" ? (
+
+        <Box>
+          <Box pad="large" align="center">
+        Open Listings
+        <Grid
+          columns={["small", "small"]}
+          rows="small"
+          gap="xsmall"
+          pad="none"
+          margin="none"
+        >
+          {pendingOfferListings.map((address) => (
+            <ListingCard2 listingAddress={address} />
+          ))}
+        </Grid>
+      </Box>
       <Box pad="large" align="center">
+        Locked Listings
+
+        <Grid
+          columns={["small", "small" ]}
+          rows="small"
+          gap="xsmall"
+          pad="none"
+          margin="none"
+        >
+          {acceptedOfferListings.map((address) => (
+            <ListingCard2 listingAddress={address} />
+          ))}
+        </Grid>
+      </Box>
+      <Box pad="large" align="center">
+        Canceled or Completed Listings
+        <Grid
+          columns={["small", "small"]}
+          rows="small"
+          gap="xsmall"
+          pad="none"
+          margin="none"
+        >
+          {canceledCompletedOfferListings.map((address) => (
+            <ListingCard2 listingAddress={address} />
+          ))}
+        </Grid>
+      </Box>
+      </Box>):(
+        <Box>
+          <Box pad="large" align="center">
         Open Listings
         <Grid
           columns={["small", "small", "small", "small", "small"]}
@@ -75,6 +127,7 @@ const MyListings = () => {
       </Box>
       <Box pad="large" align="center">
         Locked Listings
+
         <Grid
           columns={["small", "small", "small", "small", "small"]}
           rows="medium"
@@ -101,6 +154,8 @@ const MyListings = () => {
           ))}
         </Grid>
       </Box>
+      </Box>)}
+      </ResponsiveContext.Consumer>
     </Grommet>
   );
 };

@@ -79,7 +79,9 @@ const BottomTabNavigation = (props) => {
           <Button
             icon={<Favorite color="light-1" />}
             gap="small"
-            onClick={() => {}}
+            onClick={() => {
+              router.push(`/listings/mylistings`);
+            }}
             primary
             style={{ backgroundColor: "transparent" }}
           />
