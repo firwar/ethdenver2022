@@ -51,7 +51,8 @@ contract Listing is Ownable, AccessControl, ChainlinkClient {
     event ListingCompleted(address listing);
 
     // EA Information
-    address private oracle = 0xa94fcD7aaeD52a5D8a525319B16b4d3296a02F6A;
+    address private linkToken = 0x326C977E6efc84E512bB9C30f76E30c160eD06FB;
+    address private oracle = 0xc4bE487753B9861ecC52fbcE5B91B766A2D8127d;
     bytes32 private eaJobId = "fc173fc92d5748cc8d76ceb21d442a56";
     uint256 private fee = 0.1 * 10 ** 18;
 

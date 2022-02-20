@@ -193,7 +193,7 @@ export const ListingCard = ({ listingAddress, currentUserAddress }) => {
         .submitOffer(
           listingAddress,
           ethers.utils.solidityKeccak256(["string"], [unlockCode]),
-          { value: ethers.utils.parseUnits(value.escrow.toString(), "ether") }
+          { value: ethers.utils.parseUnits(offerValue.toString(), "ether") }
         );
       // TODO: Change this to waiting for event
       setToast({ status: "ok", message: "Submitted offer!" });
@@ -242,13 +242,14 @@ export const ListingCard = ({ listingAddress, currentUserAddress }) => {
             align="start"
             direction="column"
             height="xxsmall"
-            width="small"
+            width="xsmall"
             gap="xsmall"
-            overflow="hidden"
           >
-            <Heading margin="none" level="3" truncate>
-              {title}
-            </Heading>
+            <Box width="medium">
+              <Heading margin="none" level="3" truncate>
+                {title}
+              </Heading>
+            </Box>
             <Box direction="row" justify="center" align="center" gap="small">
               <Icon icon={usdIcon} color="green" />
               <Text margin="none" size="medium">
@@ -261,7 +262,7 @@ export const ListingCard = ({ listingAddress, currentUserAddress }) => {
             onClick={() => {
               onOpen();
             }}
-            label="Place Offer"
+            label="Place Escrow"
             size="small"
             type="submit"
             color="accent-4"
@@ -304,7 +305,7 @@ export const ListingCard = ({ listingAddress, currentUserAddress }) => {
               </Paragraph>
             </Box>
             <Heading margin="small" level="3">
-              Top Offer
+              Top Escrow
             </Heading>
             <Box>
               {Object.keys(offers).length === 0 ? (
@@ -321,7 +322,7 @@ export const ListingCard = ({ listingAddress, currentUserAddress }) => {
                 getOfferCards()
               )}
             </Box>
-            {submittedOffer ? (
+            {!submittedOffer ? (
               <Box>
                 <Button
                   alignSelf="center"

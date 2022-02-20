@@ -206,7 +206,14 @@ const ListingForm = () => {
             margin={{ top: "medium" }}
             gap="medium"
           >
-            <Button type="submit" label="Submit" primary />
+            <Button
+              type="submit"
+              label="Create"
+              primary
+              style={{
+                borderRadius: 2,
+              }}
+            />
             {creating && (
               <Spinner message="Start Built-in Spinner Announcement" />
             )}

@@ -5,7 +5,7 @@ const SubmitOffer = ({ price, offerValue, setOfferValue, submitOffer }) => {
   return (
     <Box>
       <Heading margin="small" level="3">
-        Your Offer
+        Your Escrow
       </Heading>
       <Box
         direction="row"

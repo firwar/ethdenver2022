@@ -21,4 +21,3 @@ observationSource = """
 
     decode_log -> decode_cbor -> fetch -> parse -> encode_data -> encode_tx -> submit_tx
 """
-externalJobID = "fc173fc9-2d57-48cc-8d76-ceb21d442a57"
