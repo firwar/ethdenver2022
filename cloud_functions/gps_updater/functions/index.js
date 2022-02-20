@@ -37,7 +37,7 @@ const handleUpdateRequest = async ({ latitude, longitude, userAddress }) => {
   }
 
   try {
-    await dbRef.doc(userAddress).set(userData);
+    await dbRef.doc(userAddress.toLowerCase()).set(userData);
     return {
       saved: true
     }
