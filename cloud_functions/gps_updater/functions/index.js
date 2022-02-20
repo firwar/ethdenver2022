@@ -33,7 +33,7 @@ const handleUpdateRequest = async ({ latitude, longitude, userAddress }) => {
   const userData = {
     latitude,
     longitude,
-    userAddress
+    userAddress: userAddress.toLowerCase()
   }
 
   try {
@@ -70,7 +70,7 @@ const handleGetRequest = async (request) => {
   const jobRunID = validator.validated.id;
   const { sellerAddress, buyerAddress } = validator.validated.data;
 
-  functions.logger.info(`Address ${sellerAddress} ${buyerAddress} ${typeof(sellerAddress)}`)
+  functions.logger.info(`Address ${sellerAddress} ${typeof(sellerAddress)} ${buyerAddress} ${typeof(buyerAddress)}`)
 
   // Default Response
   // TODO we'll set some default precision for the GPS
@@ -83,10 +83,10 @@ const handleGetRequest = async (request) => {
 
   try {
     // Query the data
-    const sellerDoc = dbRef.doc(sellerAddress);
-    const buyerDoc = dbRef.doc(buyerAddress);
-    const buyerUserData = await buyerDoc.get();
+    const sellerDoc = dbRef.doc(sellerAddress.toLowerCase());
     const sellerUserData = await sellerDoc.get();
+    const buyerDoc = dbRef.doc(buyerAddress.toLowerCase());
+    const buyerUserData = await buyerDoc.get();
 
     functions.logger.info(`Buyer ${JSON.stringify(buyerUserData.data())} Seller ${JSON.stringify(sellerUserData.data())}`)
 
