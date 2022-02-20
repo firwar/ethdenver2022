@@ -70,7 +70,7 @@ const handleGetRequest = async (request) => {
   const jobRunID = validator.validated.id;
   const { sellerAddress, buyerAddress } = validator.validated.data;
 
-  functions.logger.info(`Address ${sellerAddress} ${buyerAddress}`)
+  functions.logger.info(`Address ${sellerAddress} ${buyerAddress} ${typeof(sellerAddress)}`)
 
   // Default Response
   // TODO we'll set some default precision for the GPS
@@ -85,7 +85,8 @@ const handleGetRequest = async (request) => {
     // Query the data
     const sellerDoc = dbRef.doc(sellerAddress);
     const buyerDoc = dbRef.doc(buyerAddress);
-    const [buyerUserData, sellerUserData] = await Promise.all([sellerDoc.get(), buyerDoc.get()]);
+    const buyerUserData = await buyerDoc.get();
+    const sellerUserData = await sellerDoc.get();
 
     functions.logger.info(`Buyer ${JSON.stringify(buyerUserData.data())} Seller ${JSON.stringify(sellerUserData.data())}`)
 
