@@ -8,6 +8,7 @@ import {
   Grommet,
   Heading,
   Spinner,
+  TextInput,
 } from "grommet";
 import { useRouter } from "next/router";
 import PinataFile from "../pinata/pinataFile";
@@ -15,6 +16,7 @@ import ExchangeItGatewayContext from "../hooks/useExchangeItGateway";
 import SignerContext from "../hooks/useSigner";
 import ToastContext from "../hooks/useToast";
 import { deepFreeze } from "grommet/utils";
+import { getRandomNumber } from "../utils";
 
 export const customTheme = deepFreeze({
   global: {
@@ -42,11 +44,16 @@ const ListingForm = () => {
   const { exchangeItGateway } = useContext(ExchangeItGatewayContext);
   const { signer } = useContext(SignerContext);
   const { setToast } = useContext(ToastContext);
-  const [myUnlockCode, setMyUnlockCode] = useState();
+  const [myUnlockCode, setMyUnlockCode] = useState("");
   const [creating, setCreating] = useState(false);
 
   useEffect(() => {
-    if (exchangeItGateway === null) {
+    const randomCode = getRandomNumber(6);
+    console.log(randomCode);
+    setMyUnlockCode(randomCode);
+  }, []);
+  useEffect(() => {
+    if (exchangeItGateway === null || myUnlockCode === "") {
       return;
     }
     // Clear out to make sure we don't have duplicated calls
@@ -77,6 +84,7 @@ const ListingForm = () => {
   }, [exchangeItGateway, myUnlockCode]);
 
   const onSubmit = async ({ value }) => {
+    console.log(value);
     // Start spinner
     setCreating(true);
     // Create the actual listing
@@ -198,7 +206,14 @@ const ListingForm = () => {
             name="lockCode"
             required
             validate={[{ regexp: /^[0-9]{6}$/i }]}
-          />
+          >
+            <TextInput
+              id="lock-code-id"
+              name="lockCode"
+              placeholder="6 Digit Lock Code"
+              value={myUnlockCode}
+            />
+          </FormField>
           <Box
             direction="column"
             justify="center"

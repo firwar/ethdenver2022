@@ -1,8 +1,8 @@
 const getRandomString = (length) => {
-  var randomChars =
+  let randomChars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  var result = "";
-  for (var i = 0; i < length; i++) {
+  let result = "";
+  for (let i = 0; i < length; i++) {
     result += randomChars.charAt(
       Math.floor(Math.random() * randomChars.length)
     );
@@ -10,4 +10,15 @@ const getRandomString = (length) => {
   return result;
 };
 
-export { getRandomString };
+const getRandomNumber = (length) => {
+  let randomNumbers = "0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += randomNumbers.charAt(
+      Math.floor(Math.random() * randomNumbers.length)
+    );
+  }
+  return result;
+};
+
+export { getRandomString, getRandomNumber };

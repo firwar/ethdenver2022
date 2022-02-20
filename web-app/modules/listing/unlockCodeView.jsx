@@ -65,6 +65,14 @@ export const UnlockCodeView = ({ role }) => {
     }
   };
 
+  const geoUnlock = async () => {
+    try {
+      await listing.connect(signer).requestUserLocation();
+    } catch (e) {
+      setToast({ status: "error", message: e.message });
+    }
+  };
+
   return (
     <Box pad="medium" align="center" gap="medium">
       <Card elevation="large" width="medium">
@@ -101,6 +109,9 @@ export const UnlockCodeView = ({ role }) => {
           </Box>
           <Box align="center" widht="medium" pad="small">
             <Button primary label="Unlock" onClick={unlockContract} />
+          </Box>
+          <Box align="center" widht="medium" pad="small">
+            <Button primary label="Geo Unlock" onClick={geoUnlock} />
           </Box>
         </CardBody>
       </Card>

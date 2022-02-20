@@ -29,7 +29,7 @@ import ModalContext from "../hooks/useModal";
 import ExchangeItGatewayContext from "../hooks/useExchangeItGateway";
 import ToastContext from "../hooks/useToast";
 import SubmitOffer from "../listing/submitOffer";
-import { getRandomString } from "../utils";
+import {getRandomNumber, getRandomString} from "../utils";
 import { useRouter } from "next/router";
 
 const fakeOffers = {
@@ -38,7 +38,11 @@ const fakeOffers = {
   "0xa2d6c4297Eec8a25226AE0dc77344B0BDEBF442a": 200,
 };
 
-export const ListingCard = ({ listingAddress, currentUserAddress, viewOnly }) => {
+export const ListingCard = ({
+  listingAddress,
+  currentUserAddress,
+  viewOnly,
+}) => {
   const router = useRouter();
   const [signer, setSigner] = useState(null);
   const { exchangeItGateway } = useContext(ExchangeItGatewayContext);
@@ -108,7 +112,9 @@ export const ListingCard = ({ listingAddress, currentUserAddress, viewOnly }) =>
     const listingMap = {};
     listingOfferAddress.forEach((userAddress, index) => {
       console.log(`${userAddress} - ${currentUserAddress}`);
-      if (userAddress.toLowerCase() === currentUserAddress.toLowerCase()) {
+      if (
+        userAddress.toLowerCase() === (currentUserAddress || "").toLowerCase()
+      ) {
         listingMap["You"] = ethers.utils.formatEther(
           listingOffersTuples[1][index]
         );
@@ -171,7 +177,7 @@ export const ListingCard = ({ listingAddress, currentUserAddress, viewOnly }) =>
     });
   };
 
-  const submitOffer = async ({ value }) => {
+  const submitOffer = async () => {
     if (
       signer === null ||
       exchangeItGateway === null ||
@@ -182,7 +188,7 @@ export const ListingCard = ({ listingAddress, currentUserAddress, viewOnly }) =>
       return;
     }
 
-    const unlockCode = getRandomString(6);
+    const unlockCode = getRandomNumber(6).toLowerCase();
     console.log(`Unlock Code ${unlockCode}`);
     // Store the key on local storage for the person buying
     if (typeof window !== "undefined") {
