@@ -13,6 +13,9 @@ import {
 import { Menu as MenuIcon, Currency, Money } from "grommet-icons";
 import { ProviderContext } from "../hooks";
 import useWeb3Modal from "../hooks/useWeb3Modal";
+import { Contract } from "@ethersproject/contracts";
+import { abis } from "../contracts";
+import { ethers } from "ethers";
 
 const theme = {
   global: {
@@ -34,16 +37,34 @@ const theme = {
   },
 };
 
+const LINK_MUMBAI_ADDRESS = "0x326C977E6efc84E512bB9C30f76E30c160eD06FB";
+
 const AppBar = (props) => {
   const { provider } = useContext(ProviderContext);
 
   // Use the user address here later
   const gravatarLink =
     "https://www.gravatar.com/avatar/0xa2d6c4297Eec8a25226AE0dc77344B0BDEBF442a?s=32&d=identicon&r=PG";
-  const [ethAmount, setEthAmount] = useState(0);
   // Use the Web3 Provider for now
   const [loadWeb3Modal, logoutOfWeb3Modal, signedInAddress] = useWeb3Modal();
   const [status, setStatus] = useState(false);
+  const [tokenBalance, setTokenBalance] = useState(0);
+
+  useEffect(() => {
+    if (provider === null || provider === undefined) {
+      return;
+    }
+
+    async function getBalanceOf() {
+      const signer = provider.getSigner();
+      const erc20 = new Contract(LINK_MUMBAI_ADDRESS, abis.ERC20.abi, provider);
+      const selectedAddress = await signer.getAddress();
+      const balance = await erc20.connect(signer).balanceOf(selectedAddress);
+      console.log(ethers.utils.formatEther(balance));
+      setTokenBalance(ethers.utils.formatEther(balance));
+    }
+    getBalanceOf();
+  }, [provider]);
 
   return (
     <Grommet theme={theme}>
@@ -76,7 +97,7 @@ const AppBar = (props) => {
               <Button
                 icon={<Money />}
                 gap="small"
-                label={`EIT ${ethAmount}`}
+                label={`EIT ${tokenBalance}`}
                 onClick={() => {}}
                 color="accent-4"
                 primary

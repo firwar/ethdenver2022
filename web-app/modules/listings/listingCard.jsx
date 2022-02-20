@@ -38,7 +38,7 @@ const fakeOffers = {
   "0xa2d6c4297Eec8a25226AE0dc77344B0BDEBF442a": 200,
 };
 
-export const ListingCard = ({ listingAddress, currentUserAddress }) => {
+export const ListingCard = ({ listingAddress, currentUserAddress, viewOnly }) => {
   const router = useRouter();
   const [signer, setSigner] = useState(null);
   const { exchangeItGateway } = useContext(ExchangeItGatewayContext);
@@ -106,18 +106,22 @@ export const ListingCard = ({ listingAddress, currentUserAddress }) => {
       .getListingOffers();
     const listingOfferAddress = listingOffersTuples[0];
     const listingMap = {};
-    listingOfferAddress.forEach((userAddress) => {
+    listingOfferAddress.forEach((userAddress, index) => {
       console.log(`${userAddress} - ${currentUserAddress}`);
-      if (userAddress === currentUserAddress) {
-        listingMap["You"] = listingOffersTuples[1];
+      if (userAddress.toLowerCase() === currentUserAddress.toLowerCase()) {
+        listingMap["You"] = ethers.utils.formatEther(
+          listingOffersTuples[1][index]
+        );
         setSubmittedOffer(true);
       } else {
-        listingMap[userAddress] = listingOffersTuples[1];
+        listingMap[userAddress] = ethers.utils.formatEther(
+          listingOffersTuples[1][index]
+        );
       }
     });
     console.log(listingMap);
-    // setOffers(listingMap);
-    setOffers(fakeOffers);
+    setOffers(listingMap);
+    // setOffers(fakeOffers);
     setModalOpen(true);
     setOpen(true);
   };
@@ -262,7 +266,7 @@ export const ListingCard = ({ listingAddress, currentUserAddress }) => {
             onClick={() => {
               onOpen();
             }}
-            label="Place Escrow"
+            label={viewOnly ? "View" : "Place Escrow"}
             size="small"
             type="submit"
             color="accent-4"
@@ -315,6 +319,7 @@ export const ListingCard = ({ listingAddress, currentUserAddress }) => {
                   justify="center"
                   align="center"
                   alignContent="between"
+                  margin={{ bottom: "medium" }}
                 >
                   No Offers
                 </Card>
@@ -322,7 +327,7 @@ export const ListingCard = ({ listingAddress, currentUserAddress }) => {
                 getOfferCards()
               )}
             </Box>
-            {!submittedOffer ? (
+            {submittedOffer || viewOnly ? (
               <Box>
                 <Button
                   alignSelf="center"

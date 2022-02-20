@@ -76,6 +76,8 @@ function MyApp({ Component, pageProps }) {
   const [open, setOpen] = useState(false);
   const [toastTimeout, setToastTimeout] = useState();
 
+  const [selectedAddress, setSelectedAddress] = useState(null);
+
   // Set the gateway when we load app
   useEffect(() => {
     if (provider === null) {
@@ -108,18 +110,31 @@ function MyApp({ Component, pageProps }) {
   }, [toast]);
 
   useEffect(() => {
-    if (navigator === null || navigator === undefined) {
+    if (provider === null || provider === undefined) {
       return;
     }
-    const tempAddress = "0xa2d6c4297Eec8a25226AE0dc77344B0BDEBF442a";
+    const signer = provider.getSigner();
+    signer.getAddress().then((address) => {
+      setSelectedAddress(address);
+    });
+  }, [provider]);
+
+  useEffect(() => {
+    if (
+      navigator === null ||
+      navigator === undefined ||
+      selectedAddress === null
+    ) {
+      return;
+    }
     // Create an interval to ping
     const periodic = setInterval(() => {
       navigator.geolocation.getCurrentPosition((position) => {
         console.log(
-          `User ${tempAddress} Location ${position.coords.latitude} ${position.coords.longitude}`
+          `User ${selectedAddress} Location ${position.coords.latitude} ${position.coords.longitude}`
         );
         const geoData = {
-          userAddress: tempAddress,
+          userAddress: selectedAddress,
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         };
@@ -143,7 +158,7 @@ function MyApp({ Component, pageProps }) {
     return function cleanup() {
       clearInterval(periodic);
     };
-  }, []);
+  }, [selectedAddress]);
 
   const onClose = () => {
     setOpen(false);

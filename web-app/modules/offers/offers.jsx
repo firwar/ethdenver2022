@@ -4,7 +4,6 @@ import { ethers } from "ethers";
 import { Box, Grid, grommet, Grommet, ResponsiveContext } from "grommet";
 import { ProviderContext } from "../hooks";
 import { abis } from "../contracts";
-import { ListingCard2 } from "../listings/listingCard2";
 import { ListingCard } from "../listings/listingCard";
 import ExchangeItGatewayContext from "../hooks/useExchangeItGateway";
 import SignerContext from "../hooks/useSigner";
@@ -16,6 +15,7 @@ const Offers = () => {
 
   const [pendingOfferListings, setPendingOfferListings] = useState([]);
   const [acceptedOfferListings, setAcceptedOfferListings] = useState([]);
+  const [currentUserAddress, setCurrentUserAddress] = useState();
   const [canceledCompletedOfferListings, setCanceledCompletedOfferListings] =
     useState([]);
 
@@ -57,107 +57,133 @@ const Offers = () => {
       setPendingOfferListings(pendingListings);
       setAcceptedOfferListings(acceptedListings);
       setCanceledCompletedOfferListings(canceledCompletedListings);
+
+      const selectedUser = await signer.getAddress();
+      setCurrentUserAddress(selectedUser);
     }
     getOffers();
   }, [exchangeItGateway, provider, signer]);
 
   return (
-    <Grommet theme={grommet}>
+    <Box>
       <ResponsiveContext.Consumer>
         {(size) =>
           size === "small" ? (
-      <Box>
-      <Box pad="large" align="center">
-        Accepted Offers
-        <Grid
-          columns={["small", "small"]}
-          rows="medium"
-          gap="large"
-          pad="none"
-          margin="none"
-        >
-          {acceptedOfferListings.map((address) => (
-            <ListingCard2 listingAddress={address} />
-          ))}
-        </Grid>
-      </Box>
-      <Box pad="large" align="center">
-        Pending Offers
-        <Grid
-          columns={["small", "small"]}
-          rows="medium"
-          gap="xsmall"
-          pad="none"
-          margin="none"
-        >
-          {pendingOfferListings.map((address) => (
-            <ListingCard2 listingAddress={address} />
-          ))}
-        </Grid>
-      </Box>
-      <Box pad="large" align="center">
-        Canceled or Completed Offers
-        <Grid
-          columns={["small", "small"]}
-          rows="medium"
-          gap="large"
-          pad="none"
-          margin="none"
-        >
-          {canceledCompletedOfferListings.map((address) => (
-            <ListingCard2 listingAddress={address} />
-          ))}
-        </Grid>
-      </Box>
-    </Box>
-          ):(
-      <Box>
-      <Box pad="large" align="center">
-        Accepted Offers
-        <Grid
-          columns={["small", "small", "small", "small", "small"]}
-          rows="medium"
-          gap="large"
-          pad="none"
-          margin="none"
-        >
-          {acceptedOfferListings.map((address) => (
-            <ListingCard listingAddress={address} />
-          ))}
-        </Grid>
-      </Box>
-      <Box pad="large" align="center">
-        Pending Offers
-        <Grid
-          columns={["small", "small", "small", "small", "small"]}
-          rows="medium"
-          gap="large"
-          pad="none"
-          margin="none"
-        >
-          {pendingOfferListings.map((address) => (
-            <ListingCard listingAddress={address} />
-          ))}
-        </Grid>
-      </Box>
-      <Box pad="large" align="center">
-        Canceled or Completed Offers
-        <Grid
-          columns={["small", "small", "small", "small", "small"]}
-          rows="medium"
-          gap="large"
-          pad="none"
-          margin="none"
-        >
-          {canceledCompletedOfferListings.map((address) => (
-            <ListingCard listingAddress={address} />
-          ))}
-        </Grid>
-      </Box>
-    </Box>
-          )}
+            <Box>
+              <Box pad="large" align="center">
+                Accepted Offers
+                <Grid
+                  columns={["medium"]}
+                  rows="medium"
+                  gap="large"
+                  pad="none"
+                  margin="none"
+                >
+                  {acceptedOfferListings.map((address) => (
+                    <ListingCard
+                      listingAddress={address}
+                      currentUserAddress={currentUserAddress}
+                      viewOnly
+                    />
+                  ))}
+                </Grid>
+              </Box>
+              <Box pad="large" align="center">
+                Pending Offers
+                <Grid
+                  columns={["medium"]}
+                  rows="medium"
+                  gap="xsmall"
+                  pad="none"
+                  margin="none"
+                >
+                  {pendingOfferListings.map((address) => (
+                    <ListingCard
+                      listingAddress={address}
+                      currentUserAddress={currentUserAddress}
+                      viewOnly
+                    />
+                  ))}
+                </Grid>
+              </Box>
+              <Box pad="large" align="center">
+                Canceled or Completed Offers
+                <Grid
+                  columns={["medium"]}
+                  rows="medium"
+                  gap="large"
+                  pad="none"
+                  margin="none"
+                >
+                  {canceledCompletedOfferListings.map((address) => (
+                    <ListingCard
+                      listingAddress={address}
+                      currentUserAddress={currentUserAddress}
+                    />
+                  ))}
+                </Grid>
+              </Box>
+            </Box>
+          ) : (
+            <Box>
+              <Box pad="large" align="center">
+                Accepted Offers
+                <Grid
+                  columns={["small", "small", "small", "small", "small"]}
+                  rows="medium"
+                  gap="large"
+                  pad="none"
+                  margin="none"
+                >
+                  {acceptedOfferListings.map((address) => (
+                    <ListingCard
+                      listingAddress={address}
+                      currentUserAddress={currentUserAddress}
+                      viewOnly
+                    />
+                  ))}
+                </Grid>
+              </Box>
+              <Box pad="large" align="center">
+                Pending Offers
+                <Grid
+                  columns={["small", "small", "small", "small", "small"]}
+                  rows="medium"
+                  gap="large"
+                  pad="none"
+                  margin="none"
+                >
+                  {pendingOfferListings.map((address) => (
+                    <ListingCard
+                      listingAddress={address}
+                      currentUserAddress={currentUserAddress}
+                    />
+                  ))}
+                </Grid>
+              </Box>
+              <Box pad="large" align="center">
+                Canceled or Completed Offers
+                <Grid
+                  columns={["small", "small", "small", "small", "small"]}
+                  rows="medium"
+                  gap="large"
+                  pad="none"
+                  margin="none"
+                >
+                  {canceledCompletedOfferListings.map((address) => (
+                    <ListingCard
+                      listingAddress={address}
+                      currentUserAddress={currentUserAddress}
+                      viewOnly
+                    />
+                  ))}
+                </Grid>
+              </Box>
+            </Box>
+          )
+        }
       </ResponsiveContext.Consumer>
-    </Grommet>
+    </Box>
   );
 };
 
