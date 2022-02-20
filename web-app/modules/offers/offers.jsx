@@ -1,9 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Contract } from "@ethersproject/contracts";
 import { ethers } from "ethers";
-import { Box, Grid, grommet, Grommet } from "grommet";
+import { Box, Grid, grommet, Grommet, ResponsiveContext } from "grommet";
 import { ProviderContext } from "../hooks";
 import { abis } from "../contracts";
+import { ListingCard2 } from "../listings/listingCard2";
 import { ListingCard } from "../listings/listingCard";
 import ExchangeItGatewayContext from "../hooks/useExchangeItGateway";
 import SignerContext from "../hooks/useSigner";
@@ -62,6 +63,55 @@ const Offers = () => {
 
   return (
     <Grommet theme={grommet}>
+      <ResponsiveContext.Consumer>
+        {(size) =>
+          size === "small" ? (
+      <Box>
+      <Box pad="large" align="center">
+        Accepted Offers
+        <Grid
+          columns={["small", "small"]}
+          rows="medium"
+          gap="large"
+          pad="none"
+          margin="none"
+        >
+          {acceptedOfferListings.map((address) => (
+            <ListingCard2 listingAddress={address} />
+          ))}
+        </Grid>
+      </Box>
+      <Box pad="large" align="center">
+        Pending Offers
+        <Grid
+          columns={["small", "small"]}
+          rows="medium"
+          gap="xsmall"
+          pad="none"
+          margin="none"
+        >
+          {pendingOfferListings.map((address) => (
+            <ListingCard2 listingAddress={address} />
+          ))}
+        </Grid>
+      </Box>
+      <Box pad="large" align="center">
+        Canceled or Completed Offers
+        <Grid
+          columns={["small", "small"]}
+          rows="medium"
+          gap="large"
+          pad="none"
+          margin="none"
+        >
+          {canceledCompletedOfferListings.map((address) => (
+            <ListingCard2 listingAddress={address} />
+          ))}
+        </Grid>
+      </Box>
+    </Box>
+          ):(
+      <Box>
       <Box pad="large" align="center">
         Accepted Offers
         <Grid
@@ -104,6 +154,9 @@ const Offers = () => {
           ))}
         </Grid>
       </Box>
+    </Box>
+          )}
+      </ResponsiveContext.Consumer>
     </Grommet>
   );
 };
