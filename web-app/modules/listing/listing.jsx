@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import {
+  Avatar,
   Box,
   Button,
   Card,
@@ -218,6 +219,47 @@ const Listing = ({ address }) => {
     return null;
   };
 
+  const getOfferCards = () => {
+    console.log(offers);
+    return Object.keys(offers).map((offerAddress) => {
+      const gravatarLink = `https://www.gravatar.com/avatar/${offerAddress}?s=32&d=robohash&r=PG`;
+
+      return (
+        <Box
+          key={offerAddress}
+          height="xxsmall"
+          direction="row"
+          justify="center"
+          align="center"
+          alignContent="between"
+          round={false}
+        >
+          <Box
+            direction="row"
+            justify="center"
+            align="center"
+            alignContent="between"
+            gap="small"
+          >
+            <Box width="xxsmall">
+              <Avatar src={gravatarLink} size="small" />
+            </Box>
+            <Box width="medium">
+              <Heading level="4" truncate>
+                {offerAddress}
+              </Heading>
+            </Box>
+            <Box width="small" align="end">
+              <Heading level="4" truncate>
+                {offers[offerAddress]}
+              </Heading>
+            </Box>
+          </Box>
+        </Box>
+      );
+    });
+  };
+
   // TODO load image from ipfs
   return (
     <Box>
@@ -301,6 +343,7 @@ const Listing = ({ address }) => {
                   description={description}
                   sellerAddress={sellerAddress}
                 />
+                <Box></Box>
               </Box>
             </CardFooter>
           </Card>

@@ -86,8 +86,9 @@ function MyApp({ Component, pageProps }) {
     setExchangeItGateway(
       new Contract(
         //"0x98Bfe4e725285E2696Aa4a125b171f82bb5af0B1", // kovan
-        "0xbaE92eCf99cd1fEA6Dfe0C630e2e0b31Dd50AB8D", //Mumbai
-        //"0x064CFA230CB6cDdDe57D30f38DfCfBf7A2786272", // Mumbai
+        // "0xbaE92eCf99cd1fEA6Dfe0C630e2e0b31Dd50AB8D", // Old Mumbai
+        "0x66B55b464BE3bb66ebd1fCb4c1e37e2a88820322", // New Mumbai
+        //"0x064CFA230CB6cDdDe57D30f38DfCfBf7A2786272", // Super OldMumbai
         //"0x83E3BE4B89EbaB7C65c5695ED31Fd07e42Aac6dB", // Kovan
         abis.ExchangeItGateway.abi,
         provider

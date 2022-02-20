@@ -8,7 +8,7 @@ async function main() {
 
   console.log('Account balance:', (await deployer.getBalance()).toString());
 
-  const Gateway = await ethers.getContractFactory('LockAndSwapGateway');
+  const Gateway = await ethers.getContractFactory('ExchangeItGateway');
   const gateway = await Gateway.deploy();
 
   console.log('LockAndSwapGateway address:', gateway.address);

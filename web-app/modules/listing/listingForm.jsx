@@ -81,7 +81,7 @@ const ListingForm = () => {
         }
       }
     );
-  }, [exchangeItGateway, myUnlockCode]);
+  }, [exchangeItGateway]);
 
   const onSubmit = async ({ value }) => {
     console.log(value);
